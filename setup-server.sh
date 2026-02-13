@@ -5,24 +5,15 @@ set -euo pipefail
 #
 # Prerequisites:
 #   - Ubuntu 22.04 or 24.04
-#   - SSH key or GitHub token with access to dtcc-platform/dtcc-atlas (private repo)
 #
 # Usage:
 #   bash setup-server.sh
-#
-# To use a GitHub token instead of SSH:
-#   GITHUB_TOKEN=ghp_xxx bash setup-server.sh
 
 INSTALL_DIR="${INSTALL_DIR:-/opt/dtcc-deploy}"
 CONTAINER_PORT="${CONTAINER_PORT:-8000}"
 HOST_PORT="${HOST_PORT:-8000}"
 
-# Determine git clone URL style based on whether a token is provided
-if [ -n "${GITHUB_TOKEN:-}" ]; then
-    GH_PREFIX="https://${GITHUB_TOKEN}@github.com"
-else
-    GH_PREFIX="git@github.com:"
-fi
+GH_PREFIX="https://github.com/"
 
 echo "==> Installing Docker"
 if ! command -v docker &> /dev/null; then
@@ -67,16 +58,10 @@ else
     git -C "$INSTALL_DIR/dtcc-tetgen-wrapper" pull
 fi
 
-if [ ! -d "$INSTALL_DIR/dtcc-deploy/.git" ]; then
-    git clone "${GH_PREFIX}dtcc-platform/dtcc-deploy.git" "$INSTALL_DIR/dtcc-deploy"
-else
-    echo "dtcc-deploy already cloned, pulling latest."
-    git -C "$INSTALL_DIR/dtcc-deploy" pull
-fi
-
 echo "==> Building Docker image"
 cd "$INSTALL_DIR"
-sudo docker build -f dtcc-deploy/Dockerfile -t dtcc-deploy .
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+sudo docker build -f "$SCRIPT_DIR/Dockerfile" -t dtcc-deploy .
 
 echo "==> Starting container"
 sudo docker rm -f dtcc-deploy 2>/dev/null || true
