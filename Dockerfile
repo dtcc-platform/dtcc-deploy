@@ -2,9 +2,9 @@
 FROM node:20-slim AS frontend-builder
 
 WORKDIR /build
-COPY dtcc-dataset-downloader/frontend/package*.json ./
+COPY dtcc-atlas/frontend/package*.json ./
 RUN npm ci
-COPY dtcc-dataset-downloader/frontend/ ./
+COPY dtcc-atlas/frontend/ ./
 RUN npm run build
 
 
@@ -59,20 +59,20 @@ COPY pyproject.toml README.md LICENSE ./
 COPY dtcc_sim/ ./dtcc_sim/
 RUN pip install --no-cache-dir .
 
-# Install dtcc-dataset-downloader (dtcc-core already satisfied from above)
-COPY dtcc-dataset-downloader/pyproject.toml dtcc-dataset-downloader/README.md ./dtcc-dataset-downloader/
-COPY dtcc-dataset-downloader/server/ ./dtcc-dataset-downloader/server/
-COPY dtcc-dataset-downloader/publisher/ ./dtcc-dataset-downloader/publisher/
-RUN cd dtcc-dataset-downloader && pip install --no-cache-dir .
+# Install dtcc-atlas (dtcc-core already satisfied from above)
+COPY dtcc-atlas/pyproject.toml dtcc-atlas/README.md ./dtcc-atlas/
+COPY dtcc-atlas/server/ ./dtcc-atlas/server/
+COPY dtcc-atlas/publisher/ ./dtcc-atlas/publisher/
+RUN cd dtcc-atlas && pip install --no-cache-dir .
 
 # Copy built frontend
-COPY --from=frontend-builder /build/dist/ ./dtcc-dataset-downloader/server/static/
+COPY --from=frontend-builder /build/dist/ ./dtcc-atlas/server/static/
 
 # Copy sandbox scripts
 COPY sandbox/ ./sandbox/
 
 EXPOSE 8000
 
-WORKDIR /app/dtcc-dataset-downloader
+WORKDIR /app/dtcc-atlas
 ENTRYPOINT ["conda", "run", "--no-capture-output", "-n", "dtcc"]
 CMD ["uvicorn", "server.main:app", "--host", "0.0.0.0", "--port", "8000", "--loop", "asyncio"]

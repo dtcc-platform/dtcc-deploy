@@ -8,7 +8,7 @@ from .config import API_URL, API_TIMEOUT
 
 
 class DTCCClient:
-    """Thin async wrapper around the dtcc-sim FastAPI backend."""
+    """Thin async wrapper around the dtcc-deploy FastAPI backend."""
 
     def __init__(self, base_url: str = API_URL, timeout: float = API_TIMEOUT):
         self._base_url = base_url.rstrip("/")

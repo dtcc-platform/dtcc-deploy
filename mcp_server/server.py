@@ -1,4 +1,4 @@
-"""MCP server for dtcc-sim.
+"""MCP server for dtcc-deploy.
 
 Translates MCP tool calls into HTTP requests against the FastAPI backend.
 Run with: python -m mcp_server.server
@@ -15,7 +15,7 @@ from mcp.server.fastmcp import FastMCP
 from .client import DTCCClient
 from .config import API_URL, JOB_POLL_INTERVAL, JOB_TIMEOUT
 
-mcp = FastMCP("dtcc-sim")
+mcp = FastMCP("dtcc-deploy")
 client = DTCCClient()
 
 

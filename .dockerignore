@@ -4,8 +4,8 @@ __pycache__/
 *.egg-info/
 .git/
 build/
-dtcc-dataset-downloader/frontend/node_modules/
-dtcc-dataset-downloader/frontend/dist/
-dtcc-dataset-downloader/dtcc_dataset_downloader.egg-info/
-dtcc-dataset-downloader/temp/
+dtcc-atlas/frontend/node_modules/
+dtcc-atlas/frontend/dist/
+dtcc-atlas/dtcc_atlas.egg-info/
+dtcc-atlas/temp/
 dtcc-tetgen-wrapper/build/

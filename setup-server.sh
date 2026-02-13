@@ -5,7 +5,7 @@ set -euo pipefail
 #
 # Prerequisites:
 #   - Ubuntu 22.04 or 24.04
-#   - SSH key or GitHub token with access to dtcc-platform/dtcc-dataset-downloader (private repo)
+#   - SSH key or GitHub token with access to dtcc-platform/dtcc-atlas (private repo)
 #
 # Usage:
 #   bash setup-server.sh
@@ -53,11 +53,11 @@ else
     git -C "$INSTALL_DIR" pull
 fi
 
-if [ ! -d "$INSTALL_DIR/dtcc-dataset-downloader/.git" ]; then
-    git clone -b develop "${GH_PREFIX}dtcc-platform/dtcc-dataset-downloader.git" "$INSTALL_DIR/dtcc-dataset-downloader"
+if [ ! -d "$INSTALL_DIR/dtcc-atlas/.git" ]; then
+    git clone -b develop "${GH_PREFIX}dtcc-platform/dtcc-atlas.git" "$INSTALL_DIR/dtcc-atlas"
 else
-    echo "dtcc-dataset-downloader already cloned, pulling latest."
-    git -C "$INSTALL_DIR/dtcc-dataset-downloader" pull
+    echo "dtcc-atlas already cloned, pulling latest."
+    git -C "$INSTALL_DIR/dtcc-atlas" pull
 fi
 
 if [ ! -d "$INSTALL_DIR/dtcc-tetgen-wrapper/.git" ]; then
@@ -76,16 +76,16 @@ fi
 
 echo "==> Building Docker image"
 cd "$INSTALL_DIR"
-sudo docker build -f dtcc-deploy/Dockerfile -t dtcc-sim .
+sudo docker build -f dtcc-deploy/Dockerfile -t dtcc-deploy .
 
 echo "==> Starting container"
-sudo docker rm -f dtcc-sim 2>/dev/null || true
+sudo docker rm -f dtcc-deploy 2>/dev/null || true
 sudo docker run -d \
-    --name dtcc-sim \
+    --name dtcc-deploy \
     --restart unless-stopped \
     -p "${HOST_PORT}:${CONTAINER_PORT}" \
-    dtcc-sim
+    dtcc-deploy
 
 echo ""
-echo "==> Done. dtcc-sim is running on port ${HOST_PORT}."
+echo "==> Done. dtcc-deploy is running on port ${HOST_PORT}."
 echo "    Test with: curl http://localhost:${HOST_PORT}/"
