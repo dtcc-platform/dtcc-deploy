@@ -1,0 +1,13 @@
+LICENSE
+pyproject.toml
+dtcc_deploy.egg-info/PKG-INFO
+dtcc_deploy.egg-info/SOURCES.txt
+dtcc_deploy.egg-info/dependency_links.txt
+dtcc_deploy.egg-info/requires.txt
+dtcc_deploy.egg-info/top_level.txt
+mcp_server/__init__.py
+mcp_server/__main__.py
+mcp_server/client.py
+mcp_server/config.py
+mcp_server/server.py
+tests/test_api_health.py
