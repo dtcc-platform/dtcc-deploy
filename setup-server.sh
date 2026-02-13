@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Setup script for deploying dtcc-sim on a fresh Ubuntu server.
+# Setup script for deploying dtcc-deploy on a fresh Ubuntu server.
 #
 # Prerequisites:
 #   - Ubuntu 22.04 or 24.04
@@ -13,7 +13,7 @@ set -euo pipefail
 # To use a GitHub token instead of SSH:
 #   GITHUB_TOKEN=ghp_xxx bash setup-server.sh
 
-INSTALL_DIR="${INSTALL_DIR:-/opt/dtcc-sim}"
+INSTALL_DIR="${INSTALL_DIR:-/opt/dtcc-deploy}"
 CONTAINER_PORT="${CONTAINER_PORT:-8000}"
 HOST_PORT="${HOST_PORT:-8000}"
 
