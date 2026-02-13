@@ -1,0 +1,16 @@
+[project]
+name = "dtcc-deploy"
+version = "0.1.0"
+description = "Deployment and tooling for the DTCC platform"
+requires-python = ">=3.12"
+dependencies = []
+
+[project.optional-dependencies]
+mcp = ["mcp>=1.0.0", "httpx>=0.27.0"]
+
+[build-system]
+requires = ["setuptools>=61.0.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["mcp_server*"]
