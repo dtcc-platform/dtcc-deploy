@@ -1,28 +1,19 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Setup script for deploying dtcc-sim on a fresh Ubuntu server.
+# Setup script for deploying dtcc-deploy on a fresh Ubuntu server.
 #
 # Prerequisites:
 #   - Ubuntu 22.04 or 24.04
-#   - SSH key or GitHub token with access to dtcc-platform/dtcc-dataset-downloader (private repo)
 #
 # Usage:
 #   bash setup-server.sh
-#
-# To use a GitHub token instead of SSH:
-#   GITHUB_TOKEN=ghp_xxx bash setup-server.sh
 
-INSTALL_DIR="${INSTALL_DIR:-/opt/dtcc-sim}"
+INSTALL_DIR="${INSTALL_DIR:-/opt/dtcc-deploy}"
 CONTAINER_PORT="${CONTAINER_PORT:-8000}"
 HOST_PORT="${HOST_PORT:-8000}"
 
-# Determine git clone URL style based on whether a token is provided
-if [ -n "${GITHUB_TOKEN:-}" ]; then
-    GH_PREFIX="https://${GITHUB_TOKEN}@github.com"
-else
-    GH_PREFIX="git@github.com:"
-fi
+GH_PREFIX="https://github.com/"
 
 echo "==> Installing Docker"
 if ! command -v docker &> /dev/null; then
@@ -53,11 +44,11 @@ else
     git -C "$INSTALL_DIR" pull
 fi
 
-if [ ! -d "$INSTALL_DIR/dtcc-dataset-downloader/.git" ]; then
-    git clone -b develop "${GH_PREFIX}dtcc-platform/dtcc-dataset-downloader.git" "$INSTALL_DIR/dtcc-dataset-downloader"
+if [ ! -d "$INSTALL_DIR/dtcc-atlas/.git" ]; then
+    git clone -b develop "${GH_PREFIX}dtcc-platform/dtcc-atlas.git" "$INSTALL_DIR/dtcc-atlas"
 else
-    echo "dtcc-dataset-downloader already cloned, pulling latest."
-    git -C "$INSTALL_DIR/dtcc-dataset-downloader" pull
+    echo "dtcc-atlas already cloned, pulling latest."
+    git -C "$INSTALL_DIR/dtcc-atlas" pull
 fi
 
 if [ ! -d "$INSTALL_DIR/dtcc-tetgen-wrapper/.git" ]; then
@@ -67,25 +58,19 @@ else
     git -C "$INSTALL_DIR/dtcc-tetgen-wrapper" pull
 fi
 
-if [ ! -d "$INSTALL_DIR/dtcc-deploy/.git" ]; then
-    git clone "${GH_PREFIX}dtcc-platform/dtcc-deploy.git" "$INSTALL_DIR/dtcc-deploy"
-else
-    echo "dtcc-deploy already cloned, pulling latest."
-    git -C "$INSTALL_DIR/dtcc-deploy" pull
-fi
-
 echo "==> Building Docker image"
 cd "$INSTALL_DIR"
-sudo docker build -f dtcc-deploy/Dockerfile -t dtcc-sim .
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+sudo docker build -f "$SCRIPT_DIR/Dockerfile" -t dtcc-deploy .
 
 echo "==> Starting container"
-sudo docker rm -f dtcc-sim 2>/dev/null || true
+sudo docker rm -f dtcc-deploy 2>/dev/null || true
 sudo docker run -d \
-    --name dtcc-sim \
+    --name dtcc-deploy \
     --restart unless-stopped \
     -p "${HOST_PORT}:${CONTAINER_PORT}" \
-    dtcc-sim
+    dtcc-deploy
 
 echo ""
-echo "==> Done. dtcc-sim is running on port ${HOST_PORT}."
+echo "==> Done. dtcc-deploy is running on port ${HOST_PORT}."
 echo "    Test with: curl http://localhost:${HOST_PORT}/"

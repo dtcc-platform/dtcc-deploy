@@ -3,8 +3,15 @@ name = "dtcc-deploy"
 version = "0.1.0"
 description = "Deployment and tooling for the DTCC platform"
 requires-python = ">=3.12"
+authors = [{name = "Vasilis Naserentin", email = "vasilis.naserentin@chalmers.se"}]
 dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest", "requests"]
 
 [build-system]
 requires = ["setuptools>=61.0.0"]
 build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+markers = ["external: tests that require network access to external APIs"]
